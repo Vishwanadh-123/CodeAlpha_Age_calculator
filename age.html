@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Game-style Age Calculator</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="game-container">
+    <img src="https://cdn-icons-png.flaticon.com/512/4712/4712107.png" alt="Character" class="character" id="character" style="left: 5%;" />
+
+    <div class="step-container">
+      <div class="step active" id="step1">
+        <h3>Enter Day</h3>
+        <input type="number" id="day" min="1" max="31">
+        <button onclick="goToStep(1)">Next</button>
+      </div>
+
+      <div class="step" id="step2">
+        <h3>Enter Month</h3>
+        <input type="number" id="month" min="1" max="12">
+        <button onclick="goToStep(2)">Next</button>
+      </div>
+
+      <div class="step" id="step3">
+        <h3>Enter Year</h3>
+        <input type="number" id="year" min="1900" max="2100">
+        <button onclick="calculateAge()">Finish</button>
+      </div>
+    </div>
+
+    <div class="result-card" id="result">
+      <div class="result-emoji">🎉</div>
+      <div class="typed-text" id="typed-text"></div>
+    </div>
+  </div>
+
+  <script>
+    function goToStep(current) {
+      const inputs = ['day', 'month'];
+      const stepFrom = document.getElementById(`step${current}`);
+      const stepTo = document.getElementById(`step${current + 1}`);
+      const input = document.getElementById(inputs[current - 1]);
+
+      if (!input.value) {
+        alert("Please enter a valid value!");
+        return;
+      }
+
+      stepFrom.classList.remove('active');
+      stepTo.classList.add('active');
+
+      const character = document.getElementById("character");
+      if (current === 1) {
+        character.style.left = "40%";
+      } else if (current === 2) {
+        character.style.left = "75%";
+      }
+    }
+
+    function calculateAge() {
+      const day = parseInt(document.getElementById("day").value);
+      const month = parseInt(document.getElementById("month").value) - 1;
+      const year = parseInt(document.getElementById("year").value);
+
+      const birthDate = new Date(year, month, day);
+      const today = new Date();
+
+      let age = today.getFullYear() - birthDate.getFullYear();
+      const m = today.getMonth() - birthDate.getMonth();
+      const d = today.getDate() - birthDate.getDate();
+
+      if (m < 0 || (m === 0 && d < 0)) {
+        age--;
+      }
+
+      const resultBox = document.getElementById("result");
+      const textDisplay = document.getElementById("typed-text");
+
+      if (age >= 0) {
+        const message = `🎮 LEVEL UNLOCKED: You are ${age} years old!`;
+        textDisplay.innerHTML = "";
+        resultBox.style.display = "block";
+
+        let i = 0;
+        function typeWriter() {
+          if (i < message.length) {
+            textDisplay.innerHTML += message.charAt(i);
+            i++;
+            setTimeout(typeWriter, 50);
+          }
+        }
+        typeWriter();
+      } else {
+        textDisplay.innerHTML = "⚠️ Invalid Date Entered";
+        resultBox.style.display = "block";
+      }
+    }
+  </script>
+</body>
+</html>
